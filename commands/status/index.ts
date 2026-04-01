@@ -26,7 +26,7 @@ export const statusCommand: Command = {
         for(const usedType in cpuinfo.times) cpuTotal -= cpuinfo.times[usedType as "user"] ?? 0
       }
     }
-    await interaction.reply(`今の状態はこんな感じだよ
+    await interaction.editReply(`今の状態はこんな感じだよ
 \`\`\`
 現在時刻     : ${new Date()}
 CPU使用率    : ${Math.floor((cpuTotal - cpuUnued) * 100 / cpuTotal)}
