@@ -29,8 +29,8 @@ export const statusCommand: Command = {
     await interaction.editReply(`今の状態はこんな感じだよ
 \`\`\`
 現在時刻     : ${new Date()}
-CPU使用率    : ${Math.floor((cpuTotal - cpuUnued) * 100 / cpuTotal)}
-メモリ使用率 : ${Math.floor((totalmem() - freemem()) * 100 / totalmem())}
+CPU使用率    : ${Math.floor((cpuTotal - cpuUnued) * 100 / cpuTotal)}%
+メモリ使用率 : ${Math.floor((totalmem() - freemem()) * 100 / totalmem())}%
 \`\`\`
 `)
   }
