@@ -24,3 +24,9 @@ export class UnfinishedTaskError extends GeneralError {
     this.message = "Left unfinished tasks"
   }
 }
+export class NotExistError extends GeneralError {
+  constructor(){
+    super()
+    this.message = "It doesn's not exit"
+  }
+}

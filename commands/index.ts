@@ -1,7 +1,9 @@
 import { pingCommand } from "./ping/index.ts";
 import { exitCommand } from "./exit/index.ts";
 import { statusCommand } from "./status/index.ts";
-import { startRecordStudyingCommand, startRecordStudyingCommandRaw } from "./startRecordStudying/index.ts";
+import { startRecordStudyingCommand } from "./startRecordStudying/index.ts";
+import { registerWorkbookCommand } from "./registerWorkbook/index.ts";
+import { registerSubjectCommand } from "./registerSubject/index.ts";
 import type { Command } from "./command.d.ts";
 
 export const Commands: ( Command | ( () => Command ) )[] = [
@@ -9,5 +11,6 @@ export const Commands: ( Command | ( () => Command ) )[] = [
   exitCommand,
   statusCommand,
   startRecordStudyingCommand,
-  startRecordStudyingCommandRaw,
+  registerWorkbookCommand,
+  registerSubjectCommand,
 ]
