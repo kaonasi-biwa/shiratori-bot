@@ -13,6 +13,9 @@
     // すべての厳格な型チェックオプションを有効に
     "strict": true,
     "moduleResolution": "nodenext",
-    "types": ["@types/node"]
+    "types": ["@types/node"],
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    }
   }
 }
