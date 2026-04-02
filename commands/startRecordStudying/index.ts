@@ -27,15 +27,15 @@ export const startRecordStudyingCommand: Command =  {
   },
   async execute(interaction: ChatInputCommandInteraction) {
     try{
-      if(!interaction.options.getString("subject") || !interaction.options.getString("workbook")){
+      const subject = interaction.options.getString("subject")
+      const workbook = interaction.options.getString("workbook")
+      if(!subject || !workbook){
         await interaction.reply("引数が足りないみたい。もう一回入力してみて")
       }
       else {
-        await startRecordingStudying(
-          interaction.options.getString("subject") as string,
-          interaction.options.getString("workbook") as string
-        )
-        await interaction.reply("記録を始めたよ。頑張って")
+        await startRecordingStudying(subject, workbook)
+        await interaction.reply(`記録を始めたよ。${getNameOfWorkbook(subject, workbook)}だね。
+頑張って`)
       }
     } catch (e) {
       if(e instanceof UnfinishedTaskError){
