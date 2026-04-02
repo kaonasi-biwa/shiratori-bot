@@ -67,6 +67,15 @@ export function getWorkbooks(subject: string){
   return subjectsAndWorkbooks.subjects[subject].toSorted();
 }
 
+// 登録された教科の名前を取得
+export function getNameOfSubject(subject: string){
+  return subjectsAndWorkbooks.name[subject] || ""
+}
+
+// 登録された教科の名前を取得
+export function getNameOfWorkbook(subject: string, workbook: string){
+  return subjectsAndWorkbooks.name[`${subject}.${workbook}`] || ""
+}
 
 await checkAndAddRecordingFile()
 subjectsAndWorkbooks = JSON.parse(await readFile(SubjectAndWorkbookPath, {encoding: "utf8"}))

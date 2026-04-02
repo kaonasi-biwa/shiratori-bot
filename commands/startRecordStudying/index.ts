@@ -1,6 +1,6 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction } from "discord.js";
+import { ApplicationCommandOptionType, ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import type { Command } from "../command.d.ts"
-import { startRecordingStudying } from "@shared/recordStudying.ts";
+import { startRecordingStudying, getSubjects, getNameOfSubject, getWorkbooks, getNameOfWorkbook } from "@shared/recordStudying.ts";
 import { UnfinishedTaskError } from "@shared/errors.ts";
 
 
@@ -14,12 +14,14 @@ export const startRecordStudyingCommand: Command =  {
         name: "subject",
         description: "記録する教科",
         required: true,
+        autocomplete: true,
       },
       {
         type: ApplicationCommandOptionType.String,
         name: "workbook",
         description: "記録する参考書類等",
         required: true,
+        autocomplete: true,
       },
     ]
   },
@@ -41,6 +43,23 @@ export const startRecordStudyingCommand: Command =  {
       } else {
         await interaction.reply("うまくいかなかったみたい。もう一度やってみて")
         console.error(e)
+      }
+    }
+  },
+  async autocomplete(interaction: AutocompleteInteraction) {
+    const focusedOption = interaction.options.getFocused(true)
+    if(focusedOption.name === "subject"){
+      await interaction.respond(
+        getSubjects()
+          .map((subid) => ( {value: subid, name: `${subid} (${getNameOfSubject(subid)})`} ))
+      )
+    } else if(focusedOption.name === "workbook"){
+      const subject = interaction.options.getString("subject")
+      if(subject && getSubjects().includes(subject)){
+        await interaction.respond(
+          getWorkbooks(subject)
+            .map((workid) => ( {value: workid, name: `${workid} (${getNameOfWorkbook(subject, workid)})`} ))
+        )
       }
     }
   }

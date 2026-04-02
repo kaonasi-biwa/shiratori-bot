@@ -1,19 +1,19 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction } from "discord.js";
+import { ApplicationCommandOptionType, ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import type { Command } from "../command.d.ts"
-import { registerWorkbook } from "@shared/recordStudying.ts";
-import { UnfinishedTaskError } from "@shared/errors.ts";
+import { registerWorkbook, getSubjects, getNameOfSubject } from "@shared/recordStudying.ts";
 
 
 export const registerWorkbookCommand: Command = {
   data: {
     name: "register-workbook",
-    description: "教科と参考書の登録",
+    description: "参考書の登録",
     options: [
       {
         type: ApplicationCommandOptionType.String,
         name: "subject",
         description: "登録する教科",
         required: true,
+        autocomplete: true,
       },
       {
         type: ApplicationCommandOptionType.String,
@@ -50,6 +50,9 @@ export const registerWorkbookCommand: Command = {
       await interaction.reply("うまくいかなかったみたい。もう一度やってみて")
       console.error(e)
     }
+  },
+  async autocomplete(interaction: AutocompleteInteraction){
+    await interaction.respond(getSubjects().map((subid) => ( {value: subid, name: `${subid} (${getNameOfSubject(subid)})`} )))
   }
 }
 

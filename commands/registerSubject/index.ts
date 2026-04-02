@@ -7,7 +7,7 @@ import { UnfinishedTaskError } from "@shared/errors.ts";
 export const registerSubjectCommand: Command = {
   data: {
     name: "register-subject",
-    description: "教科と参考書の登録",
+    description: "教科の登録",
     options: [
       {
         type: ApplicationCommandOptionType.String,
