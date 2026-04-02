@@ -81,6 +81,19 @@ export async function stopRecordingStudying(): Promise<TimeArray>{
   return getTimeDifference(nowDate, decodeDate(lastLine.split(" ")[1]))
 }
 
+// 記録をキャンセルし、開始のログを消去
+export async function cancelRecordingStudying(){
+  const lastLine = await getLastLine();
+  if(lastLine.startsWith("END")) throw new UnfinishedTaskError();
+  const recordingFileContent = ( await readFile(RecordingFilePath, {encoding: "utf8"}) ).split("\n").toReversed()
+  await writeFile(
+    RecordingFilePath,
+    recordingFileContent.toSpliced(recordingFileContent.findIndex((str) => !!str), 1).toReversed().join("\n"),
+    {encoding: "utf8"}
+  )
+}
+
+// 教科と参考書等を保存
 async function saveSubjectAndWorkbook(){
   await writeFile(SubjectAndWorkbookPath, JSON.stringify(subjectsAndWorkbooks), {encoding: "utf8"})
 }
