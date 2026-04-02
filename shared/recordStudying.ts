@@ -27,16 +27,58 @@ async function getLastLine() : Promise<string> {
   return ( await readFile(RecordingFilePath, {encoding: "utf8"}) ).trim().split("\n").at(-1) ?? ""
 }
 
-function formatDate(){
+type DateArray = [number, number, number, number, number, number]
+type TimeArray = [number, number, number]
+// 現在時刻を年・月・日・時間・分・秒で返す
+function getDate(): DateArray{
   const date = new Date();
-  return `${date.getFullYear()},${date.getMonth()},${date.getDate()},${date.getHours()},${date.getMinutes()},${date.getSeconds()}`
+  return [ date.getFullYear(),date.getMonth(),date.getDate(),date.getHours(),date.getMinutes(),date.getSeconds() ];
+}
+
+function encodeDate(date: DateArray): string{
+  return `${date[0]},${date[1]},${date[2]},${date[3]},${date[4]},${date[5]}`
+}
+
+function decodeDate(encodedTime: string): DateArray {
+  const returnValue = encodedTime.split(",").map((text) => Number(text)).slice(0,6) as DateArray
+  return returnValue;
+}
+
+// 2つの引数の時間との差を時間・分・秒で返す。想定は1つ目の引数が後の時間。
+function getTimeDifference(previousTime: DateArray, followingTime: DateArray): TimeArray {
+  const differenceValue = previousTime.map((time, index) =>  time - followingTime[index]) as DateArray
+  const returnValue = [...differenceValue.slice(3,6)] as TimeArray;
+  if(returnValue[2] < 0){
+    returnValue[1] -= 1
+    returnValue[2] += 60
+  }
+  if(returnValue[1] < 0){
+    returnValue[0] -= 1
+    returnValue[1] += 60
+  }
+  if(differenceValue[0] || differenceValue[1] || differenceValue[2]){
+    returnValue[0] += (
+      (new Date(previousTime[0],previousTime[1], previousTime[2] )).getTime()
+      - (new Date(followingTime[0],followingTime[1],followingTime[2])).getTime()
+    ) / 3600000
+  }
+  return returnValue;
 }
 
 // 記録を開始
 export async function startRecordingStudying(subject: string, workbook: string){
   const lastLine = await getLastLine();
   if(lastLine.startsWith("START ")) throw new UnfinishedTaskError();
-  await appendFile(RecordingFilePath, `START ${formatDate()} ${subject} ${workbook}`, {encoding: "utf8"});
+  await appendFile(RecordingFilePath, `START ${encodeDate(getDate())} ${subject} ${workbook}\n`, {encoding: "utf8"});
+}
+
+// 記録を終了し、かかった時間を返却
+export async function stopRecordingStudying(): Promise<TimeArray>{
+  const lastLine = await getLastLine();
+  if(lastLine.startsWith("END")) throw new UnfinishedTaskError();
+  const nowDate = getDate();
+  await appendFile(RecordingFilePath, `END ${encodeDate(nowDate)}\n`, {encoding: "utf8"});
+  return getTimeDifference(nowDate, decodeDate(lastLine.split(" ")[1]))
 }
 
 async function saveSubjectAndWorkbook(){

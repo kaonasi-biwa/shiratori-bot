@@ -4,6 +4,7 @@ import { statusCommand } from "./status/index.ts";
 import { startRecordStudyingCommand } from "./startRecordStudying/index.ts";
 import { registerWorkbookCommand } from "./registerWorkbook/index.ts";
 import { registerSubjectCommand } from "./registerSubject/index.ts";
+import { stopRecordStudyingCommand } from "./stopRecordStudying/index.ts";
 import type { Command } from "./command.d.ts";
 
 export const Commands: ( Command | ( () => Command ) )[] = [
@@ -13,4 +14,5 @@ export const Commands: ( Command | ( () => Command ) )[] = [
   startRecordStudyingCommand,
   registerWorkbookCommand,
   registerSubjectCommand,
+  stopRecordStudyingCommand,
 ]
