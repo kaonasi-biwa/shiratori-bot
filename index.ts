@@ -1,5 +1,4 @@
 import { Client, Events, GatewayIntentBits, BaseInteraction } from "discord.js";
-import Config from "./config.json" with {type: "json"};
 import { Commands } from "./commands/index.ts"
 import type { commandFunction } from "./commands/command.d.ts";
 
@@ -33,5 +32,5 @@ client.on("interactionCreate", async (interaction: BaseInteraction) => {
 })
 
 // クライアントのトークンを照合してログインする
-client.login(Config.token);
+client.login(process.env["TOKEN"]);
 
