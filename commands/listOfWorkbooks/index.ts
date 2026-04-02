@@ -12,7 +12,7 @@ export const listOfWorkbooksCommand: Command =  {
     try{
       let message = ""
       for(const subject of getSubjects()){
-        message += `# ${getNameOfSubject(subject)} (${subject})\n\n`
+        message += `# ${getNameOfSubject(subject)} (${subject})\n`
         for(const workbook of getWorkbooks(subject)){
           message += `- ${getNameOfWorkbook(subject, workbook)} (${workbook})\n`
         }
