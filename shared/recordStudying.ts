@@ -3,7 +3,7 @@ import { mkdir, writeFile, readFile, appendFile } from "node:fs/promises";
 import { UnfinishedTaskError } from "./errors.ts";
 
 const RecordingFilePath = "./data/recordingStudying.txt"
-const SubjectAndWorkbookPath = "./data/subjectAndWorkbook.txt"
+const SubjectAndWorkbookPath = "./data/subjectAndWorkbook.json"
 let subjectsAndWorkbooks: SubjectAndWorkbook = {
   name: {},
   subjects: {},
