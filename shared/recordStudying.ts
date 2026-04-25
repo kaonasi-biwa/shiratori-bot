@@ -159,9 +159,9 @@ export async function totalStudyingTime(start:[number, number, number], end?:[nu
   }
   for(const workbook in totalTime){
     totalTime[workbook][1] += Math.floor(totalTime[workbook][2] / 60)
-    totalTime[workbook][2] += totalTime[workbook][2] % 60
+    totalTime[workbook][2] = totalTime[workbook][2] % 60
     totalTime[workbook][0] += Math.floor(totalTime[workbook][1] / 60)
-    totalTime[workbook][1] += totalTime[workbook][1] % 60
+    totalTime[workbook][1] = totalTime[workbook][1] % 60
   }
   return totalTime;
 }

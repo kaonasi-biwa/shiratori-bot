@@ -25,8 +25,8 @@ export const getTotalStudyingTimeCommand: Command =  {
   async execute(interaction) {
     try{
       type time = [number, number, number]
-      const startStr = ( interaction.getArguments("start") ?? "1960/1/1" ).split("/")
-      const endStr = ( interaction.getArguments("end") ?? "" ).split("/")
+      const startStr = ( interaction.getArguments("start") || "1960/1/1" ).split("/")
+      const endStr = ( interaction.getArguments("end") || "" ).split("/")
       const start: time = [Number(startStr[0]), Number(startStr[1]), Number(startStr[2])]
       const end: time = [Number(endStr[0]), Number(endStr[1]), Number(endStr[2])]
       if(Number.isInteger(start[0]) && Number.isInteger(start[1]) && Number.isInteger(start[2])){
