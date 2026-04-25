@@ -1,7 +1,9 @@
-import { Client, Events, GatewayIntentBits, type Interaction, ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
+import { Client, Events, GatewayIntentBits, type Interaction, ChatInputCommandInteraction } from "discord.js";
 import { Commands } from "./commands/index.ts"
 import type { commandFunction, autocompleteFunction } from "./commands/command.d.ts";
 import { renderMessage, loadDefaultTempletes, loadTempletes } from "@shared/messages.ts";
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 
 const client: Client = new Client({intents: [GatewayIntentBits.Guilds]});
 
@@ -46,7 +48,21 @@ client.on("interactionCreate", async (interaction: Interaction) => {
   }
 })
 
+let botConfig: {
+  ignoreDefaultMessageTemplete?: boolean,
+  messageTempletes?: string[],
+} = {}
+if(existsSync("./config.json")){
+  try {
+    botConfig = JSON.parse(await readFile("./config.json", {encoding: "utf8"}))
+  } catch(e){}
+}
+
+if(!botConfig.ignoreDefaultMessageTemplete)
+  loadDefaultTempletes()
+if(botConfig.messageTempletes && Array.isArray(botConfig.messageTempletes))
+  for(const filename of botConfig.messageTempletes) await loadTempletes(filename)
+
 // クライアントのトークンを照合してログインする
 client.login(process.env["TOKEN"]);
 
-loadDefaultTempletes()

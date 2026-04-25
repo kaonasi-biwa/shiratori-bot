@@ -1,4 +1,5 @@
 import DefaultMessageTempletes from "./defaultMessageTempletes.ts"
+import { existsSync } from "node:fs";
 
 const messageTempletes: Record<string,  (string | TempleteStructure[])[]> = {}
 
@@ -31,8 +32,17 @@ export function renderMessage(id: string, args: RenderingMessageArgs = {}): stri
   }
 }
 
-export function loadTempletes(filename: string){
-
+export async function loadTempletes(filename: string) {
+  const filepath = "./messageTempletes/" + filename
+  if(existsSync(filepath)){
+    try {
+      const templete = await import("." + filepath)
+      Object.assign(messageTempletes, templete.default);
+    } catch(e){
+      console.error(e)
+      console.error(filepath, "の読み込みに失敗しました")
+    }
+  }
 }
 
 export function loadDefaultTempletes(){

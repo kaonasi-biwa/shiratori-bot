@@ -1,4 +1,6 @@
 /config.json
 node_modules/
 /.env
+/config.json
+messageTempletes/
 data/
