@@ -1,11 +1,11 @@
-import { ApplicationCommandData, AutocompleteInteraction } from "discord.js"
+import { ChatInputApplicationCommandData } from "discord.js"
 import { RenderingMessageArgs } from "@shared/messages.ts";
 
 export type commandFunction = (interaction: ShiratoriInteraction) => Promise<InteractionReturn>;
 export type autocompleteFunction = (interaction: ShiratoriAutocomplete) => Promise<{value: string, name: string}[]>;
 
 export interface Command {
-  data: ApplicationCommandData,
+  data: ChatInputApplicationCommandData,
   execute: commandFunction,
   autocomplete?: autocompleteFunction,
 }

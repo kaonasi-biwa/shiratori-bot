@@ -11,7 +11,7 @@ import { revertLastRecordCommand } from "./revertLastRecord/index.ts";
 import { checkRecordingStatusCommand } from "./checkRecordingStatus/index.ts";
 import type { Command } from "./command.d.ts";
 
-export const Commands: ( Command | ( () => Command ) )[] = [
+export const Commands: Command[] = [
   pingCommand,
   exitCommand,
   statusCommand,

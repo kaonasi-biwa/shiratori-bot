@@ -4,22 +4,22 @@ export default {
   "status:message": [
     [
       "現在の状態:",
-      "```\r",
-      "現在時刻     : ", { type: "placeholder", name: "$date"}, "\r",
-      "CPU使用率    : ", { type: "placeholder", name: "$cpu"}, "\r",
+      "```\n",
+      "現在時刻     : ", { type: "placeholder", name: "$date"}, "\n",
+      "CPU使用率    : ", { type: "placeholder", name: "$cpu"}, "\n",
       "メモリ使用率 : ", { type: "placeholder", name: "$memory"},
-      "\r```",
+      "\n```",
     ]
   ],
   "recording:message.startRecording": [
     [
-      "記録を開始しました。\r",
+      "記録を開始しました。\n",
       "参考書名: ", { type: "placeholder", name: "$workbook"},
     ]
   ],
   "recording:message.endRecording": [ 
     [
-      "記録を終了しました\r",
+      "記録を終了しました\n",
       "勉強時間: ", { type: "placeholder", name: "$time" },
     ]
   ],
@@ -48,4 +48,5 @@ export default {
   "recording:error.unknownSubject": [ "Error: この教科は登録されていません" ],
   "general:error.general": [ "Error: もう一度やり直してください" ],
   "general:error.lessArguments": [ "Error: 引数が足りません" ],
+  "general:error.unknownCommand": [ "Error: コマンドが見つかりません" ],
 }
