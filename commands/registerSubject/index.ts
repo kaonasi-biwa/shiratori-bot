@@ -1,7 +1,6 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction } from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 import type { Command } from "../command.d.ts"
 import { registerSubject } from "@shared/recordStudying.ts";
-import { UnfinishedTaskError } from "@shared/errors.ts";
 
 
 export const registerSubjectCommand: Command = {
@@ -23,21 +22,23 @@ export const registerSubjectCommand: Command = {
       },
     ]
   },
-  async execute(interaction: ChatInputCommandInteraction){
+  async execute(interaction){
     try{
-      if(!interaction.options.getString("subject") || !interaction.options.getString("subject-name")){
-        await interaction.reply("引数が足りないみたい。もう一回入力してみて")
+      const subject = interaction.getArguments("subject");
+      const subjectName = interaction.getArguments("subject-name");
+      if(!subject || !subjectName){
+        return { messageId: "general:error.lessArguments" }
       }
       else {
         await registerSubject(
-          interaction.options.getString("subject") as string,
-          interaction.options.getString("subject-name") as string
+          subject,
+          subjectName,
         )
-        await interaction.reply("登録できたよ。")
+        return { messageId: "recording:message.registerSubject" }
       }
     } catch (e) {
-      await interaction.reply("うまくいかなかったみたい。もう一度やってみて")
       console.error(e)
+      return { messageId: "general:error.general" }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 import type { Command } from "../command.d.ts"
 import { registerWorkbook, getSubjects, getNameOfSubject } from "@shared/recordStudying.ts";
 
@@ -29,30 +29,25 @@ export const registerWorkbookCommand: Command = {
       },
     ]
   },
-  async execute(interaction: ChatInputCommandInteraction){
+  async execute(interaction){
     try{
-      if(
-        !interaction.options.getString("subject")
-         || !interaction.options.getString("workbook")
-         || !interaction.options.getString("workbook-name")
-      ){
-        await interaction.reply("引数が足りないみたい。もう一回入力してみて")
+      const subject = interaction.getArguments("subject");
+      const workbook = interaction.getArguments("workbook");
+      const workbookName = interaction.getArguments("workbook-name");
+      if(!subject || !workbook || !workbookName){
+        return { messageId: "general:error.lessArguments" }
       }
       else {
-        await registerWorkbook(
-          interaction.options.getString("subject") as string,
-          interaction.options.getString("workbook") as string,
-          interaction.options.getString("workbook-name") as string,
-        )
-        await interaction.reply("登録できたよ。")
+        await registerWorkbook(subject, workbook, workbookName);
+        return { messageId: "recording:message.registerWorkbook" }
       }
     } catch (e) {
-      await interaction.reply("うまくいかなかったみたい。もう一度やってみて")
       console.error(e)
+      return { messageId: "general:error.general" }
     }
   },
-  async autocomplete(interaction: AutocompleteInteraction){
-    await interaction.respond(getSubjects().map((subid) => ( {value: subid, name: `${subid} (${getNameOfSubject(subid)})`} )))
+  async autocomplete(){
+    return getSubjects().map((subid) => ( {value: subid, name: `${subid} (${getNameOfSubject(subid)})`} ))
   }
 }
 

@@ -1,4 +1,4 @@
-import { DefaultMessageTempletes } from "./defaultMessageTempletes.ts"
+import DefaultMessageTempletes from "./defaultMessageTempletes.ts"
 
 const messageTempletes: Record<string,  (string | TempleteStructure[])[]> = {}
 
@@ -7,7 +7,7 @@ interface Placeholder{
   name: string;
 }
 type TempleteStructure = string | Placeholder
-type RenderingMessageArgs = Record<string, string>
+export type RenderingMessageArgs = Record<string, string>
 
 export function renderMessage(id: string, args: RenderingMessageArgs = {}): string {
   if (id in messageTempletes) {

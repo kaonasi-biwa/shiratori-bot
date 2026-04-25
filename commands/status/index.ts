@@ -1,4 +1,3 @@
-import { CommandInteraction } from "discord.js";
 import type { Command } from "../command.d.ts"
 import { cpus, freemem, totalmem } from "node:os"
 
@@ -7,8 +6,8 @@ export const statusCommand: Command = {
     name: "status",
     description: "CPUとメモリの確認"
   },
-  async execute(interaction : CommandInteraction) {
-    await interaction.deferReply()
+  async execute(interaction) {
+    await interaction.deferReply();
     let cpuUnused = 0;
     let cpuTotal = 0;
     {
@@ -26,12 +25,15 @@ export const statusCommand: Command = {
         for(const usedType in cpuinfo.times) cpuTotal -= cpuinfo.times[usedType as "user"] ?? 0
       }
     }
-    await interaction.editReply(`今の状態はこんな感じだよ
-\`\`\`
-現在時刻     : ${new Date()}
-CPU使用率    : ${Math.floor(100 - cpuUnused * 100 / cpuTotal)}%
-メモリ使用率 : ${Math.floor(100 - freemem() * 100 / totalmem())}%
-\`\`\`
-`)
+    return {
+      messageId: "status:message",
+      messageArgs: {
+        "$date": `${new Date()}`,
+        "$cpu": `${Math.floor(100 - cpuUnused * 100 / cpuTotal)}%`,
+        "$memory": `${Math.floor(100 - freemem() * 100 / totalmem())}%`,
+      },
+      codeblock: true,
+      edit: true,
+    }
   }
 }

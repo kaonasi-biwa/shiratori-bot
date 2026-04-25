@@ -1,4 +1,3 @@
-import { ChatInputCommandInteraction } from "discord.js";
 import type { Command } from "../command.d.ts"
 import { getSubjects, getWorkbooks, getNameOfSubject, getNameOfWorkbook } from "@shared/recordStudying.ts";
 
@@ -8,7 +7,7 @@ export const listOfWorkbooksCommand: Command =  {
     name: "list-of-workbooks",
     description: "教科とワークの一覧を表示",
   },
-  async execute(interaction: ChatInputCommandInteraction) {
+  async execute() {
     try{
       let message = ""
       for(const subject of getSubjects()){
@@ -18,10 +17,10 @@ export const listOfWorkbooksCommand: Command =  {
         }
         message += "\n"
       }
-      await interaction.reply("登録されている教科と参考書類はこんな感じだよ\n```" + message + "```")
+      return { messageId: "recording:message.listOfWorkbooks", messageArgs: { "$workbooks": message } }
     } catch (e) {
-      await interaction.reply("うまくいかなかったみたい。もう一度やってみて")
       console.error(e)
+      return { messageId: "general:error.general" }
     }
   },
 }

@@ -1,6 +1,7 @@
 import { Client, Events, GatewayIntentBits, type Interaction, ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import { Commands } from "./commands/index.ts"
 import type { commandFunction, autocompleteFunction } from "./commands/command.d.ts";
+import { renderMessage, loadDefaultTempletes, loadTempletes } from "@shared/messages.ts";
 
 const client: Client = new Client({intents: [GatewayIntentBits.Guilds]});
 
@@ -21,21 +22,31 @@ client.once(Events.ClientReady, async readyClient => {
 client.on("interactionCreate", async (interaction: Interaction) => {
 
   if( interaction.isCommand() && CommandFunction[interaction.commandName]){
-    const message = await CommandFunction[interaction.commandName](interaction as ChatInputCommandInteraction);
-    switch (message){
-      case "exit": {
-        client.destroy()
-        break;
+    const message = await CommandFunction[interaction.commandName]({
+      deferReply: async () => await interaction.deferReply(),
+      getArguments(id){
+        return ( interaction as ChatInputCommandInteraction ).options.getString(id) ?? ""
       }
-      default: {
-        break;
-      }
+    });
+    let messageText = renderMessage(message.messageId, message.messageArgs ?? {})
+    if (message.edit) 
+      await interaction.editReply(messageText);
+    else
+      await interaction.reply(messageText);
+    if (message.shutdown){
+      client.destroy();
     }
   } else if(interaction.isAutocomplete() && AutoCompleteFunction[interaction.commandName]){
-    await AutoCompleteFunction[interaction.commandName](interaction as AutocompleteInteraction)
+    interaction.respond(await AutoCompleteFunction[interaction.commandName]({
+      getArguments(id){
+        return interaction.options.getString(id) ?? ""
+      },
+      getFocused: () => interaction.options.getFocused(true).name
+    }))
   }
 })
 
 // クライアントのトークンを照合してログインする
 client.login(process.env["TOKEN"]);
 
+loadDefaultTempletes()

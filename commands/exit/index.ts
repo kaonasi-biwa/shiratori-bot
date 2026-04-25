@@ -1,4 +1,3 @@
-import { CommandInteraction } from "discord.js";
 import type { Command } from "../command.d.ts"
 
 export const exitCommand: Command = {
@@ -6,8 +5,7 @@ export const exitCommand: Command = {
     name: "exit",
     description: "Botの終了"
   },
-  async execute(interaction : CommandInteraction) {
-    await interaction.reply("また今度")
-    return "exit"
+  async execute() {
+    return { messageId: "exit:message", shutdown: true }
   }
 }

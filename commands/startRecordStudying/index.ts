@@ -25,42 +25,37 @@ export const startRecordStudyingCommand: Command =  {
       },
     ]
   },
-  async execute(interaction: ChatInputCommandInteraction) {
+  async execute(interaction) {
     try{
-      const subject = interaction.options.getString("subject")
-      const workbook = interaction.options.getString("workbook")
+      const subject = interaction.getArguments("subject")
+      const workbook = interaction.getArguments("workbook")
       if(!subject || !workbook){
-        await interaction.reply("引数が足りないみたい。もう一回入力してみて")
+        return { messageId: "general:error.lessArguments" }
       }
       else {
         await startRecordingStudying(subject, workbook)
-        await interaction.reply(`記録を始めたよ。${getNameOfWorkbook(subject, workbook)}だね。
-頑張って`)
+        return { messageId: "recording:message.startRecording", messageArgs: { "$workbook": getNameOfWorkbook(subject, workbook) } }
       }
     } catch (e) {
       if(e instanceof UnfinishedTaskError){
-        await interaction.reply("前の記録がまだ終了していないみたいだね")
+        return { messageId: "recording:error.unfinishedRecoeding" }
       } else {
-        await interaction.reply("うまくいかなかったみたい。もう一度やってみて")
         console.error(e)
+        return { messageId: "general:error.general" }
       }
     }
   },
-  async autocomplete(interaction: AutocompleteInteraction) {
-    const focusedOption = interaction.options.getFocused(true)
-    if(focusedOption.name === "subject"){
-      await interaction.respond(
-        getSubjects()
+  async autocomplete(interaction) {
+    const focusedOption = interaction.getFocused();
+    if(focusedOption === "subject"){
+      return getSubjects()
           .map((subid) => ( {value: subid, name: `${subid} (${getNameOfSubject(subid)})`} ))
-      )
-    } else if(focusedOption.name === "workbook"){
-      const subject = interaction.options.getString("subject")
+    } else if(focusedOption === "workbook"){
+      const subject = interaction.getArguments("subject")
       if(subject && getSubjects().includes(subject)){
-        await interaction.respond(
-          getWorkbooks(subject)
-            .map((workid) => ( {value: workid, name: `${workid} (${getNameOfWorkbook(subject, workid)})`} ))
-        )
-      }
-    }
+        return getWorkbooks(subject)
+          .map((workid) => ( {value: workid, name: `${workid} (${getNameOfWorkbook(subject, workid)})`} ))
+      } else return [];
+    } else return [];
   }
 }
