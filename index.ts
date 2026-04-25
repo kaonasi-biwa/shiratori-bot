@@ -2,9 +2,11 @@ import { Client, Events, GatewayIntentBits, type Interaction, ChatInputCommandIn
 import { Commands } from "./commands/index.ts"
 import type { commandFunction, autocompleteFunction } from "./commands/command.d.ts";
 import { renderMessage, loadDefaultTemplates, loadTemplates } from "@shared/messages.ts";
+import { totalStudyingTime } from "@shared/recordStudying.ts";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import readline from "node:readline";
+import cron from "node-cron"
 
 const client: Client = new Client({intents: [GatewayIntentBits.Guilds]});
 
@@ -54,6 +56,7 @@ client.on("interactionCreate", async (interaction: Interaction) => {
 let botConfig: {
   ignoreDefaultMessageTemplate?: boolean,
   messageTemplates?: string[],
+  notificationChannel?: string,
 } = {}
 if(existsSync("./config.json")){
   try {
@@ -65,7 +68,17 @@ if(!botConfig.ignoreDefaultMessageTemplate)
   loadDefaultTemplates()
 if(botConfig.messageTemplates && Array.isArray(botConfig.messageTemplates))
   for(const filename of botConfig.messageTemplates) await loadTemplates(filename)
-
+if(botConfig.notificationChannel){
+  cron.schedule("0 0 4 * * *", async () => {
+    const channel = client.channels.cache.get(botConfig.notificationChannel as string)
+    if(channel?.isSendable()){
+      const nowDate = new Date()
+      const studiedTime = await totalStudyingTime([nowDate.getFullYear(), nowDate.getMonth() + 1, nowDate.getDate() - 1])
+      const message = renderMessage("recording:routine.studiedTime", {"$time": `${studiedTime["<TOTAL>"][0]}時間${studiedTime["<TOTAL>"][1]}分${studiedTime["<TOTAL>"][2]}秒`})
+      await channel.send(message)
+    }
+  })
+}
 // クライアントのトークンを照合してログインする
 client.login(process.env["TOKEN"]);
 

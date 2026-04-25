@@ -50,6 +50,7 @@ export default {
   "recording:message.checkRecordingStatus.finished": [ "現在記録中ではありません" ],
   "recording:message.cancelRecording": [ "記録をキャンセルしました" ],
   "recording:message.revertLastRecord": [ "最新の記録を取り消しました" ],
+  "recording:routine.studiedTime": [["昨日の勉強時間: ", { type: "placeholder", name: "$time"}]],
   "recording:error.notRecoeding": [ "Error: 記録をまだ開始していません" ],
   "recording:error.unfinishedRecoeding": [ "Error: 記録をまだ終了していません" ],
   "recording:error.unknownWorkbook": [ "Error: この参考書は登録されていません" ],
