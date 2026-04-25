@@ -9,6 +9,7 @@ import { cancelRecordStudyingCommand } from "./cancelRecordStudying/index.ts";
 import { listOfWorkbooksCommand } from "./listOfWorkbooks/index.ts";
 import { revertLastRecordCommand } from "./revertLastRecord/index.ts";
 import { checkRecordingStatusCommand } from "./checkRecordingStatus/index.ts";
+import { getTotalStudyingTimeCommand } from "./getTotalStudyingTime/index.ts";
 import type { Command } from "./command.d.ts";
 
 export const Commands: Command[] = [
@@ -23,4 +24,5 @@ export const Commands: Command[] = [
   listOfWorkbooksCommand,
   revertLastRecordCommand,
   checkRecordingStatusCommand,
+  getTotalStudyingTimeCommand,
 ]

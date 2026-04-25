@@ -120,6 +120,52 @@ export async function checkRecordingStatus(): Promise<false | {date: DateArray, 
   }
 }
 
+// 指定期間の勉強時間の合計を取得
+export async function totalStudyingTime(start:[number, number, number], end?:[number,number,number]): Promise<Record<string, TimeArray>>{
+  const filelines = ( await readFile(RecordingFilePath, {encoding: "utf8"}) ).split("\n").filter((line) => !!line);
+  const totalTime: Record<string, TimeArray> = {"<TOTAL>": [0,0,0]}
+  let startTime: DateArray | null = null;
+  let recordWorkbook = ""
+  let recordSubject = ""
+  const startDate = ( new Date(start[0], start[1]-1, start[2], 4) ).getTime()
+  const endDate = end ? ( new Date(end[0], end[1]-1, start[2]+1, 4) ).getTime() : Infinity;
+  for(const line of filelines){
+    const lineContent = line.split(" ")
+    // console.log(lineContent)
+    if(lineContent[0] === "END"){
+      if(startTime){
+        const timeDifference = getTimeDifference(decodeDate(lineContent[1]), startTime)
+        totalTime[recordWorkbook][0] += timeDifference[0]
+        totalTime[recordWorkbook][1] += timeDifference[1]
+        totalTime[recordWorkbook][2] += timeDifference[2]
+        totalTime[recordSubject][0] += timeDifference[0]
+        totalTime[recordSubject][1] += timeDifference[1]
+        totalTime[recordSubject][2] += timeDifference[2]
+        totalTime["<TOTAL>"][0] += timeDifference[0]
+        totalTime["<TOTAL>"][1] += timeDifference[1]
+        totalTime["<TOTAL>"][2] += timeDifference[2]
+      } else continue
+    } else if(lineContent[0] === "START"){
+      const dateArray = decodeDate(lineContent[1]);
+      const date = ( new Date(...dateArray) ).getTime();
+      if(date <=startDate) continue;
+      if(endDate <= date) break;
+      recordSubject = lineContent[2]
+      recordWorkbook = `${recordSubject}.${lineContent[3]}`
+      if(!totalTime[recordSubject]) totalTime[recordSubject] = [0,0,0];
+      if(!totalTime[recordWorkbook]) totalTime[recordWorkbook] = [0,0,0];
+      startTime = dateArray;
+    }
+  }
+  for(const workbook in totalTime){
+    totalTime[workbook][1] += Math.floor(totalTime[workbook][2] / 60)
+    totalTime[workbook][2] += totalTime[workbook][2] % 60
+    totalTime[workbook][0] += Math.floor(totalTime[workbook][1] / 60)
+    totalTime[workbook][1] += totalTime[workbook][1] % 60
+  }
+  return totalTime;
+}
+
 // 教科と参考書等を保存
 async function saveSubjectAndWorkbook(){
   await writeFile(SubjectAndWorkbookPath, JSON.stringify(subjectsAndWorkbooks), {encoding: "utf8"})

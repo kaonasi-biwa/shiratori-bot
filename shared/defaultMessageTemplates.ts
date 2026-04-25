@@ -39,6 +39,14 @@ export default {
       "参考書名: ", { type: "placeholder", name: "$workbook"},
     ],
   ],
+  "recording:message.getTotalTimeStudyingTime": [
+    [
+      "勉強した時間:",
+      "\n```",
+      { type: "placeholder", name: "$list"},
+      "```\n",
+    ],
+  ],
   "recording:message.checkRecordingStatus.finished": [ "現在記録中ではありません" ],
   "recording:message.cancelRecording": [ "記録をキャンセルしました" ],
   "recording:message.revertLastRecord": [ "最新の記録を取り消しました" ],
@@ -49,4 +57,5 @@ export default {
   "general:error.general": [ "Error: もう一度やり直してください" ],
   "general:error.lessArguments": [ "Error: 引数が足りません" ],
   "general:error.unknownCommand": [ "Error: コマンドが見つかりません" ],
+  "general:error.invalidArguments": [ "Error: 引数の形式が不適当です" ],
 }
