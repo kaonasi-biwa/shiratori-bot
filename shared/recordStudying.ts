@@ -68,7 +68,7 @@ function getTimeDifference(previousTime: DateArray, followingTime: DateArray): T
 // 記録を開始
 export async function startRecordingStudying(subject: string, workbook: string){
   if(!(subject in subjectsAndWorkbooks.subjects)) throw new UnknownSubjectError();
-  if(!subjectsAndWorkbooks.subjects[subject].includes(`${subject}.${workbook}`)) throw new UnknownWorkbookError();
+  if(!subjectsAndWorkbooks.subjects[subject].includes(`${workbook}`)) throw new UnknownWorkbookError();
   const lastLine = await getLastLine();
   if(lastLine.startsWith("START ")) throw new UnfinishedTaskError();
   await appendFile(RecordingFilePath, `START ${encodeDate(getDate())} ${subject} ${workbook}\n`, {encoding: "utf8"});
@@ -93,6 +93,31 @@ export async function cancelRecordingStudying(){
     recordingFileContent.toSpliced(recordingFileContent.findIndex((str) => !!str), 1).toReversed().join("\n"),
     {encoding: "utf8"}
   )
+}
+
+// 最新の終了済みの記録を1つ消去
+export async function revertLastRecord(){
+  const lastLine = await getLastLine();
+  if(lastLine.startsWith("START")) throw new UnfinishedTaskError();
+  const recordingFileContent = ( await readFile(RecordingFilePath, {encoding: "utf8"}) ).split("\n").toReversed()
+  await writeFile(
+    RecordingFilePath,
+    recordingFileContent.toSpliced(recordingFileContent.findIndex((str) => !!str), 1)
+                        .toSpliced(recordingFileContent.findIndex((str) => !!str), 1)
+                        .toReversed().join("\n"),
+    {encoding: "utf8"}
+  )
+}
+
+// 現在記録中かどうかを確認。記録中であれば開始時刻と参考書名を返す。
+export async function checkRecordingStatus(): Promise<false | {date: DateArray, workbook: string}>{
+  const lastLine = await getLastLine();
+  if(lastLine.startsWith("END")) return false;
+  const lineContent = lastLine.split(" ")
+  return {
+    date: decodeDate(lineContent[1]),
+    workbook: getNameOfWorkbook(lineContent[2], lineContent[3])
+  }
 }
 
 // 教科と参考書等を保存

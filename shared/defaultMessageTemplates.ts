@@ -33,7 +33,15 @@ export default {
       "```\n",
     ],
   ],
+  "recording:message.checkRecordingStatus.recording": [
+    [
+      "開始時刻: ", { type: "placeholder", name: "$date"}, "\n",
+      "参考書名: ", { type: "placeholder", name: "$workbook"},
+    ],
+  ],
+  "recording:message.checkRecordingStatus.finished": [ "現在記録中ではありません" ],
   "recording:message.cancelRecording": [ "記録をキャンセルしました" ],
+  "recording:message.revertLastRecord": [ "最新の記録を取り消しました" ],
   "recording:error.notRecoeding": [ "Error: 記録をまだ開始していません" ],
   "recording:error.unfinishedRecoeding": [ "Error: 記録をまだ終了していません" ],
   "recording:error.unknownWorkbook": [ "Error: この参考書は登録されていません" ],
