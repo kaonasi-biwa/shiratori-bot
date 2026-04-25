@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, ChatInputCommandInteraction, AutocompleteInteraction } from "discord.js";
 import type { Command } from "../command.d.ts"
 import { startRecordingStudying, getSubjects, getNameOfSubject, getWorkbooks, getNameOfWorkbook } from "@shared/recordStudying.ts";
-import { UnfinishedTaskError } from "@shared/errors.ts";
+import { UnfinishedTaskError, UnknownSubjectError, UnknownWorkbookError } from "@shared/errors.ts";
 
 
 export const startRecordStudyingCommand: Command =  {
@@ -39,6 +39,10 @@ export const startRecordStudyingCommand: Command =  {
     } catch (e) {
       if(e instanceof UnfinishedTaskError){
         return { messageId: "recording:error.unfinishedRecoeding" }
+      } else if(e instanceof UnknownSubjectError){
+        return { messageId: "recording:error.unknownSubject" }
+      } else if(e instanceof UnknownWorkbookError){
+        return { messageId: "recording:error.unknownWorkbook" }
       } else {
         console.error(e)
         return { messageId: "general:error.general" }

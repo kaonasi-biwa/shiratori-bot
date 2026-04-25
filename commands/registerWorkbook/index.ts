@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import type { Command } from "../command.d.ts"
 import { registerWorkbook, getSubjects, getNameOfSubject } from "@shared/recordStudying.ts";
+import { UnknownSubjectError } from "@shared/errors.ts";
 
 
 export const registerWorkbookCommand: Command = {
@@ -42,8 +43,12 @@ export const registerWorkbookCommand: Command = {
         return { messageId: "recording:message.registerWorkbook" }
       }
     } catch (e) {
-      console.error(e)
-      return { messageId: "general:error.general" }
+      if(e instanceof UnknownSubjectError){
+        return { messageId: "recording:error.unknownSubject" }
+      } else {
+        console.error(e)
+        return { messageId: "general:error.general" }
+      }
     }
   },
   async autocomplete(){

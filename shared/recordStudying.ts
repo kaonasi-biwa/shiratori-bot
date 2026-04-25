@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { mkdir, writeFile, readFile, appendFile } from "node:fs/promises";
-import { UnfinishedTaskError } from "./errors.ts";
+import { UnfinishedTaskError, UnknownSubjectError, UnknownWorkbookError } from "./errors.ts";
 
 const RecordingFilePath = "./data/recordingStudying.txt"
 const SubjectAndWorkbookPath = "./data/subjectAndWorkbook.json"
@@ -67,6 +67,8 @@ function getTimeDifference(previousTime: DateArray, followingTime: DateArray): T
 
 // 記録を開始
 export async function startRecordingStudying(subject: string, workbook: string){
+  if(!(subject in subjectsAndWorkbooks.subjects)) throw new UnknownSubjectError();
+  if(!subjectsAndWorkbooks.subjects[subject].includes(`${subject}.${workbook}`)) throw new UnknownWorkbookError();
   const lastLine = await getLastLine();
   if(lastLine.startsWith("START ")) throw new UnfinishedTaskError();
   await appendFile(RecordingFilePath, `START ${encodeDate(getDate())} ${subject} ${workbook}\n`, {encoding: "utf8"});
@@ -107,6 +109,7 @@ export async function registerSubject(id: string, name: string){
 
 // 参考書等を登録
 export async function registerWorkbook(subject: string, id: string, name: string){
+  if(!(subject in subjectsAndWorkbooks.subjects)) throw new UnknownSubjectError();
   subjectsAndWorkbooks.subjects[subject].push(id)
   subjectsAndWorkbooks.name[`${subject}.${id}`] = name
   saveSubjectAndWorkbook()

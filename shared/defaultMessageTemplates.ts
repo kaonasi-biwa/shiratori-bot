@@ -36,6 +36,8 @@ export default {
   "recording:message.cancelRecording": [ "記録をキャンセルしました" ],
   "recording:error.notRecoeding": [ "Error: 記録をまだ開始していません" ],
   "recording:error.unfinishedRecoeding": [ "Error: 記録をまだ終了していません" ],
+  "recording:error.unknownWorkbook": [ "Error: この参考書は登録されていません" ],
+  "recording:error.unknownSubject": [ "Error: この教科は登録されていません" ],
   "general:error.general": [ "Error: もう一度やり直してください" ],
   "general:error.lessArguments": [ "Error: 引数が足りません" ],
 }

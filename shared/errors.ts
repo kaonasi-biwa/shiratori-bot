@@ -30,3 +30,15 @@ export class NotExistError extends GeneralError {
     this.message = "It doesn's not exit"
   }
 }
+export class UnknownWorkbookError extends GeneralError {
+  constructor(){
+    super()
+    this.message = "The workbook doesn's not exit"
+  }
+}
+export class UnknownSubjectError extends GeneralError {
+  constructor(){
+    super()
+    this.message = "The subject doesn's not exit"
+  }
+}
